@@ -2,6 +2,7 @@ import {
   bottomLeft,
   bottomRight,
   first,
+  includes,
   isEmptyRange,
   isMultiDimRange,
   isRange,
@@ -12,6 +13,8 @@ import {
   max,
   mean,
   min,
+  MultiDimRange,
+  Range,
   reverse,
   shift,
   sort,
@@ -98,6 +101,84 @@ describe('min-max-range', () => {
     it('returns the first elements of multi-dimensional range', () => {
       for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
         expect(first(MULTI_DIM_RANGE)).toEqual(MULTI_DIM_RANGE.map(r => r[0]));
+      }
+    });
+  });
+
+  describe('includes', () => {
+    it('throws an error if input is no range', () => {
+      for (const INVALID_RANGE of INVALID_RANGES) {
+        expect(() => {
+          includes(INVALID_RANGE);
+        }).toThrowError();
+      }
+    });
+
+    it('returns false if test input is no range', () => {
+      const includedInRange1D = includes(RANGE_1D);
+      for (const INVALID_RANGE of INVALID_RANGES) {
+        expect(includedInRange1D(INVALID_RANGE)).toBe(false);
+      }
+    });
+
+    it('returns false for empty range', () => {
+      const includedInEmpty = includes(EMPTY_RANGE);
+      for (const RANGE of RANGES) {
+        expect(includedInEmpty(RANGE)).toBe(false);
+      }
+    });
+
+    it('returns true if included in one-dimensional range', () => {
+      const includedInRange1D = includes(RANGE_1D);
+      expect(includedInRange1D(RANGE_1D)).toBe(true);
+      const rand1: number = Math.random();
+      const rand2: number = Math.random();
+      expect(includedInRange1D([
+        rand1 * RANGE_1D[0] + (1 - rand1) * RANGE_1D[1],
+        rand2 * RANGE_1D[0] + (1 - rand2) * RANGE_1D[1],
+      ])).toBe(true);
+    });
+
+    it('returns false if not included in one-dimensional range', () => {
+      const notIncludedRanges: Range[] = [
+        EMPTY_RANGE,
+        ...MULTI_DIM_RANGES,
+      ];
+      const includedInRange1D = includes(RANGE_1D);
+      for (const notIncludedRange of notIncludedRanges) {
+        expect(includedInRange1D(notIncludedRange)).toBe(false);
+      }
+    });
+    
+    it('returns true if included in multi-dimensional range', () => {
+      for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
+        const includedInRange = includes(MULTI_DIM_RANGE);
+        expect(includedInRange(MULTI_DIM_RANGE)).toBe(true);
+        expect(
+          includedInRange(
+            MULTI_DIM_RANGE.map(r => {
+              const rand1: number = Math.random();
+              const rand2: number = Math.random();
+              return [
+                rand1 * r[0] + (1 - rand1) * r[1],
+                rand2 * r[0] + (1 - rand2) * r[1],
+              ];
+            }) as MultiDimRange
+          )
+        ).toBe(true);
+      }
+    });
+
+    it('returns false if not included in multi-dimensional range', () => {
+      const notIncludedRanges: Range[] = [
+        EMPTY_RANGE,
+        RANGE_1D,
+      ];
+      const includedInRange2D = includes(RANGE_2D);
+      const includedInMultiDimRange = includes(MULTI_DIM_RANGE);
+      for (const notIncludedRange of notIncludedRanges) {
+        expect(includedInRange2D(notIncludedRange)).toBe(false);
+        expect(includedInMultiDimRange(notIncludedRange)).toBe(false);
       }
     });
   });
