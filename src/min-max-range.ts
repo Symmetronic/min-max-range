@@ -239,6 +239,29 @@ export function reverse(range: Range): Range {
 }
 
 /**
+ * Return range with values in each dimension sorted from lowest to highest.
+ * @param   range The range.
+ * @returns       Range with values in each dimension sorted from lowest to
+ *                highest.
+ */
+export function sort(range: Range): Range {
+  return pipe(
+    asRange,
+    alternative(
+      pipe(
+        asRange1D,
+        (range: Range1D) => [min(range), max(range)],
+      ),
+      pipe(
+        asMultiDimRange,
+        map((el: Range1D) => asRange1D(sort(el))),
+      ),
+      ret([]),
+    ),
+  )(range);
+}
+
+/**
  * Return top-left coordinates of two-dimensional range. 
  * @param   range Two-dimensional range.
  * @returns       Top-left coordinates.

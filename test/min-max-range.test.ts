@@ -12,6 +12,7 @@ import {
   max,
   min,
   reverse,
+  sort,
   topLeft,
   topRight,
 } from '../src/min-max-range';
@@ -293,6 +294,7 @@ describe('min-max-range', () => {
 
     it('returns empty range for empty range', () => {
       expect(reverse(EMPTY_RANGE)).toEqual(EMPTY_RANGE);
+      expect(reverse(EMPTY_RANGE)).not.toBe(EMPTY_RANGE);
     });
 
     it('reverses values of one-dimensional range', () => {
@@ -303,6 +305,36 @@ describe('min-max-range', () => {
       for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
         expect(reverse(MULTI_DIM_RANGE))
           .toEqual(MULTI_DIM_RANGE.map(r => [r[1], r[0]]));
+      }
+    });
+  });
+
+  describe('sort', () => {
+    it('throws an error if input is no range', () => {
+      for (const INVALID_RANGE of INVALID_RANGES) {
+        expect(() => {
+          sort(INVALID_RANGE);
+        }).toThrowError();
+      }
+    });
+
+    it('returns empty range for empty range', () => {
+      expect(sort(EMPTY_RANGE)).toEqual(EMPTY_RANGE);
+      expect(sort(EMPTY_RANGE)).not.toBe(EMPTY_RANGE);
+    });
+
+    it('sorts values of one-dimensional range', () => {
+      expect(sort(RANGE_1D)).toEqual([
+        Math.min(...RANGE_1D),
+        Math.max(...RANGE_1D),
+      ]);
+    });
+
+    it('reverses values of multi-dimensional range', () => {
+      for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
+        expect(sort(MULTI_DIM_RANGE)).toEqual(
+          MULTI_DIM_RANGE.map(r => [Math.min(...r), Math.max(...r)])
+        );
       }
     });
   });
