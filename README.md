@@ -1,4 +1,4 @@
-[![build](https://github.com/Symmetronic/min-max-range/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Symmetronic/min-max-range/actions/workflows/build.yml?query=branch%3Amain) [![GitHub License](https://img.shields.io/github/license/Symmetronic/min-max-range)](https://github.com/Symmetronic/min-max-range/blob/main/LICENSE)
+[![build](https://github.com/Symmetronic/min-max-range/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Symmetronic/min-max-range/actions/workflows/build.yml?query=branch%3Amain) [![Coverage Status](https://coveralls.io/repos/github/Symmetronic/min-max-range/badge.svg?branch=main)](https://coveralls.io/github/Symmetronic/min-max-range?branch=main) [![GitHub License](https://img.shields.io/github/license/Symmetronic/min-max-range)](https://github.com/Symmetronic/min-max-range/blob/main/LICENSE)
 
 # min-max-range
 
