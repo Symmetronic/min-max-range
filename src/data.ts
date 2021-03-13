@@ -41,4 +41,4 @@ export type Range = EmptyRange | NonEmptyRange;
 /**
  * Two-dimensional coordinates.
  */
-export type Coordinates = [number, number];
+export type Coordinates2D = [number, number];

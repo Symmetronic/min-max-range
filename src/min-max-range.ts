@@ -1,5 +1,5 @@
 export {
-  Coordinates,
+  Coordinates2D,
   EmptyRange,
   MultiDimRange,
   NonEmptyRange,
@@ -10,7 +10,7 @@ export {
 } from './data';
 
 import {
-  Coordinates,
+  Coordinates2D,
   MultiDimRange,
   Range,
   Range1D,
@@ -44,7 +44,7 @@ import {
  * @param   range Two-dimensional range.
  * @returns       Bottom-left coordinates.
  */
-export function bottomLeft(range: Range2D): Coordinates {
+export function bottomLeft(range: Range2D): Coordinates2D {
   return pipe(
     asRange2D,
     (range: Range2D) => [min(range[0]), min(range[1])],
@@ -56,7 +56,7 @@ export function bottomLeft(range: Range2D): Coordinates {
  * @param   range Two-dimensional range.
  * @returns       Bottom-right coordinates.
  */
-export function bottomRight(range: Range2D): Coordinates {
+export function bottomRight(range: Range2D): Coordinates2D {
   return pipe(
     asRange2D,
     (range: Range2D) => [max(range[0]), min(range[1])],
@@ -380,7 +380,7 @@ export function sort(range: Range): Range {
  * @param   range Two-dimensional range.
  * @returns       Top-left coordinates.
  */
-export function topLeft(range: Range2D): Coordinates {
+export function topLeft(range: Range2D): Coordinates2D {
   return pipe(
     asRange2D,
     (range: Range2D) => [min(range[0]), max(range[1])],
@@ -392,7 +392,7 @@ export function topLeft(range: Range2D): Coordinates {
  * @param   range Two-dimensional range.
  * @returns       Top-right coordinates.
  */
-export function topRight(range: Range2D): Coordinates {
+export function topRight(range: Range2D): Coordinates2D {
   return pipe(
     asRange2D,
     (range: Range2D) => [max(range[0]), max(range[1])],
