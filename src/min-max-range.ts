@@ -29,6 +29,7 @@ import {
   isNumber,
   map,
   max as maxOfArray,
+  mean as meanOfArray,
   min as minOfArray,
   pipe,
   ret,
@@ -42,7 +43,7 @@ import {
 export function bottomLeft(range: Range2D): Coordinates {
   return pipe(
     asRange2D,
-    (range: Range2D) => [min(range[0]), min(range[1])],
+    (range: Range2D) => [asNumber(min(range[0])), asNumber(min(range[1]))],
   )(range);
 }
 
@@ -54,7 +55,7 @@ export function bottomLeft(range: Range2D): Coordinates {
 export function bottomRight(range: Range2D): Coordinates {
   return pipe(
     asRange2D,
-    (range: Range2D) => [max(range[0]), min(range[1])],
+    (range: Range2D) => [asNumber(max(range[0])), asNumber(min(range[1]))],
   )(range);
 }
 
@@ -69,7 +70,7 @@ export function first(range: Range): undefined | number | number[] {
     alternative(
       pipe(
         asRange1D,
-        (range: Range1D) => range[0],
+        (range: Range1D) => asNumber(range[0]),
       ),
       pipe(
         asMultiDimRange,
@@ -139,7 +140,7 @@ export function last(range: Range): undefined | number | number[] {
     alternative(
       pipe(
         asRange1D,
-        (range: Range1D) => range[1],
+        (range: Range1D) => asNumber(range[1]),
       ),
       pipe(
         asMultiDimRange,
@@ -195,6 +196,28 @@ export function max(range: Range): undefined | number | number[] {
 }
 
 /**
+ * Return mean of each dimension of a range.
+ * @param   range The range.
+ * @returns       Mean of each dimension of the range.
+ */
+export function mean(range: Range): undefined | number | number[] {
+  return pipe(
+    asRange,
+    alternative(
+      pipe(
+        asRange1D,
+        meanOfArray,
+      ),
+      pipe(
+        asMultiDimRange,
+        map((el: Range1D) => asNumber(mean(el))),
+      ),
+      ret(undefined),
+    ),
+  )(range);
+}
+
+/**
  * Return minimum value of each dimension of a range.
  * @param   range The range.
  * @returns       Minimum value of each dimension of the range.
@@ -227,7 +250,7 @@ export function reverse(range: Range): Range {
     alternative(
       pipe(
         asRange1D,
-        (range: Range1D) => [last(range), first(range)],
+        (range: Range1D) => [asNumber(last(range)), asNumber(first(range))],
       ),
       pipe(
         asMultiDimRange,
@@ -250,7 +273,7 @@ export function sort(range: Range): Range {
     alternative(
       pipe(
         asRange1D,
-        (range: Range1D) => [min(range), max(range)],
+        (range: Range1D) => [asNumber(min(range)), asNumber(max(range))],
       ),
       pipe(
         asMultiDimRange,

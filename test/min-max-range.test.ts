@@ -10,6 +10,7 @@ import {
   last,
   length,
   max,
+  mean,
   min,
   reverse,
   sort,
@@ -254,6 +255,31 @@ describe('min-max-range', () => {
       for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
         expect(max(MULTI_DIM_RANGE))
           .toEqual(MULTI_DIM_RANGE.map(r => Math.max(...r)));
+      }
+    });
+  });
+
+  describe('mean', () => {
+    it('throws an error if input is no range', () => {
+      for (const INVALID_RANGE of INVALID_RANGES) {
+        expect(() => {
+          mean(INVALID_RANGE);
+        }).toThrowError();
+      }
+    });
+
+    it('returns undefined for empty range', () => {
+      expect(mean(EMPTY_RANGE)).toBe(undefined);
+    });
+
+    it('returns arithmetic mean of one-dimensional range', () => {
+      expect(mean(RANGE_1D)).toBe((RANGE_1D[0] + RANGE_1D[1]) / 2);
+    });
+
+    it('returns arithmetic mean of multi-dimensional range', () => {
+      for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
+        expect(mean(MULTI_DIM_RANGE))
+          .toEqual(MULTI_DIM_RANGE.map(r => (r[0] + r[1]) / 2));
       }
     });
   });

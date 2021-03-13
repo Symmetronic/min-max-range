@@ -188,6 +188,15 @@ export function max(values: number[]): number {
 }
 
 /**
+ * Return mean of values.
+ * @param   values Array of numbers.
+ * @returns        Mean value.
+ */
+export function mean(values: number[]): number {
+  return sum(values) / values.length;
+}
+
+/**
  * Return minimum value of array of numbers.
  * @param   values Array of numbers.
  * @returns        Minimum value.
@@ -213,4 +222,13 @@ export function pipe(...transforms: Transform[]): Transform {
  */
 export function ret<T>(value: T): () => T {
   return () => value;
+}
+
+/**
+ * Return sum of values.
+ * @param   values Array of numbers
+ * @returns        The sum.
+ */
+export function sum(values: number[]): number {
+  return values.reduce((sum, value) => sum + value, 0);
 }

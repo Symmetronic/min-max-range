@@ -12,9 +12,11 @@ import {
   isNumber,
   map,
   max,
+  mean,
   min,
   pipe,
   ret,
+  sum,
   Transform,
 } from '../src/utils';
 
@@ -261,8 +263,14 @@ describe('utils', () => {
     });
   });
 
+  describe('mean', () => {
+    it('returns the arithmetic mean of an array of numbers', () => {
+      expect(mean([4, 0, -6, 3])).toBe(0.25);
+    });
+  });
+
   describe('min', () => {
-    it('returns the minimum value of an array of number', () => {
+    it('returns the minimum value of an array of numbers', () => {
       expect(min([-3, 5, 0, -12])).toBe(-12);
     });
   });
@@ -285,6 +293,12 @@ describe('utils', () => {
     it('returns a return function', () => {
       const returner = ret(42);
       expect(returner()).toBe(42);
+    });
+  });
+
+  describe('sum', () => {
+    it('returns the sum of an array of numbers', () => {
+      expect(sum([-2, 4, -8, 16, -32, 64])).toBe(42);
     });
   });
 });
