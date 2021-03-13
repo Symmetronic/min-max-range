@@ -37,3 +37,8 @@ export type NonEmptyRange = Range1D | MultiDimRange;
  * Any range.
  */
 export type Range = EmptyRange | NonEmptyRange;
+
+/**
+ * Two-dimensional coordinates.
+ */
+export type Coordinates = [number, number];

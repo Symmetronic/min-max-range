@@ -1,4 +1,5 @@
 export {
+  Coordinates,
   EmptyRange,
   MultiDimRange,
   NonEmptyRange,
@@ -9,8 +10,10 @@ export {
 } from './data';
 
 import {
+  Coordinates,
   Range,
   Range1D,
+  Range2D,
 } from './data';
 
 import {
@@ -20,6 +23,7 @@ import {
   asNumber,
   asRange,
   asRange1D,
+  asRange2D,
   isArray,
   isCouple,
   isNumber,
@@ -29,6 +33,30 @@ import {
   pipe,
   ret,
 } from './utils';
+
+/**
+ * Return bottom-left coordinates of two-dimensional range.
+ * @param   range Two-dimensional range.
+ * @returns       Bottom-left coordinates.
+ */
+export function bottomLeft(range: Range2D): Coordinates {
+  return pipe(
+    asRange2D,
+    (range: Range2D) => [min(range[0]), min(range[1])],
+  )(range);
+}
+
+/**
+ * Return bottom-right coordinates of two-dimensional range.
+ * @param   range Two-dimensional range.
+ * @returns       Bottom-right coordinates.
+ */
+export function bottomRight(range: Range2D): Coordinates {
+  return pipe(
+    asRange2D,
+    (range: Range2D) => [max(range[0]), min(range[1])],
+  )(range);
+}
 
 /**
  * Return the first value of each dimension of a range.
@@ -185,5 +213,29 @@ export function min(range: Range): undefined | number | number[] {
       ),
       ret(undefined),
     ),
+  )(range);
+}
+
+/**
+ * Return top-left coordinates of two-dimensional range. 
+ * @param   range Two-dimensional range.
+ * @returns       Top-left coordinates.
+ */
+export function topLeft(range: Range2D): Coordinates {
+  return pipe(
+    asRange2D,
+    (range: Range2D) => [min(range[0]), max(range[1])],
+  )(range);
+}
+
+/**
+ * Return top-right coordinates of two-dimensional range.
+ * @param   range Two-dimensional range.
+ * @returns       Top-right coordinates.
+ */
+export function topRight(range: Range2D): Coordinates {
+  return pipe(
+    asRange2D,
+    (range: Range2D) => [max(range[0]), max(range[1])],
   )(range);
 }

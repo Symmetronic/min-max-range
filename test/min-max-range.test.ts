@@ -1,4 +1,6 @@
 import {
+  bottomLeft,
+  bottomRight,
   first,
   isEmptyRange,
   isMultiDimRange,
@@ -9,6 +11,8 @@ import {
   length,
   max,
   min,
+  topLeft,
+  topRight,
 } from '../src/min-max-range';
 
 import {
@@ -22,6 +26,52 @@ import {
 } from './mocks';
 
 describe('min-max-range', () => {
+  describe('bottomLeft', () => {
+    it('throws an error if input is no two-dimensional range', () => {
+      const nonRange2Ds: any[] = [
+        ...INVALID_RANGES,
+        EMPTY_RANGE,
+        RANGE_1D,
+        MULTI_DIM_RANGE,
+      ];
+      for (const nonRange2D of nonRange2Ds) {
+        expect(() => {
+          bottomLeft(nonRange2D);
+        }).toThrowError();
+      }
+    });
+
+    it('returns bottom-left coordinates of two-dimensional range', () => {
+      expect(bottomLeft(RANGE_2D)).toEqual([
+        Math.min(...RANGE_2D[0]),
+        Math.min(...RANGE_2D[1]),
+      ]);
+    });
+  });
+56
+  describe('bottomRight', () => {
+    it('throws an error if input is no two-dimensional range', () => {
+      const nonRange2Ds: any[] = [
+        ...INVALID_RANGES,
+        EMPTY_RANGE,
+        RANGE_1D,
+        MULTI_DIM_RANGE,
+      ];
+      for (const nonRange2D of nonRange2Ds) {
+        expect(() => {
+          bottomRight(nonRange2D);
+        }).toThrowError();
+      }
+    });
+
+    it('returns bottom-right coordinates of two-dimensional range', () => {
+      expect(bottomRight(RANGE_2D)).toEqual([
+        Math.max(...RANGE_2D[0]),
+        Math.min(...RANGE_2D[1]),
+      ]);
+    });
+  });
+  
   describe('first', () => {
     it('throws an error if input is no range', () => {
       for (const INVALID_RANGE of INVALID_RANGES) {
@@ -35,7 +85,7 @@ describe('min-max-range', () => {
       expect(first(EMPTY_RANGE)).toBe(undefined);
     });
 
-    it('returns the first element for one-dimensional range', () => {
+    it('returns the first element of one-dimensional range', () => {
       expect(first(RANGE_1D)).toBe(RANGE_1D[0]);
     });
     
@@ -228,6 +278,52 @@ describe('min-max-range', () => {
         expect(min(MULTI_DIM_RANGE))
           .toEqual(MULTI_DIM_RANGE.map(r => Math.min(...r)));
       }
+    });
+  });
+
+  describe('topLeft', () => {
+    it('throws an error if input is no two-dimensional range', () => {
+      const nonRange2Ds: any[] = [
+        ...INVALID_RANGES,
+        EMPTY_RANGE,
+        RANGE_1D,
+        MULTI_DIM_RANGE,
+      ];
+      for (const nonRange2D of nonRange2Ds) {
+        expect(() => {
+          topLeft(nonRange2D);
+        }).toThrowError();
+      }
+    });
+
+    it('returns top-left coordinates of two-dimensional range', () => {
+      expect(topLeft(RANGE_2D)).toEqual([
+        Math.min(...RANGE_2D[0]),
+        Math.max(...RANGE_2D[1]),
+      ]);
+    });
+  });
+
+  describe('topRight', () => {
+    it('throws an error if input is no two-dimensional range', () => {
+      const nonRange2Ds: any[] = [
+        ...INVALID_RANGES,
+        EMPTY_RANGE,
+        RANGE_1D,
+        MULTI_DIM_RANGE,
+      ];
+      for (const nonRange2D of nonRange2Ds) {
+        expect(() => {
+          topRight(nonRange2D);
+        }).toThrowError();
+      }
+    });
+
+    it('returns top-right coordinates of two-dimensional range', () => {
+      expect(topRight(RANGE_2D)).toEqual([
+        Math.max(...RANGE_2D[0]),
+        Math.max(...RANGE_2D[1]),
+      ]);
     });
   });
 });
