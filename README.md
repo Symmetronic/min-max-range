@@ -1,4 +1,4 @@
-[![GitHub License](https://img.shields.io/github/license/Symmetronic/min-max-range)](https://github.com/Symmetronic/min-max-range/blob/master/LICENSE)
+[![GitHub License](https://img.shields.io/github/license/Symmetronic/min-max-range)](https://github.com/Symmetronic/min-max-range/blob/main/LICENSE)
 
 # min-max-range
 
