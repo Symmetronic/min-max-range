@@ -114,7 +114,8 @@ export function includes(range: Range): Transform<Range, boolean> {
         pipe(
           asMultiDimRange,
           (range: MultiDimRange) => (
-            range.every((el: Range1D, i: number) => (
+            range.length === test.length
+            && range.every((el: Range1D, i: number) => (
               includes(el)(asRange1D(test[i])))
             )
           ),
@@ -322,10 +323,7 @@ export function partOf(range: Range): Transform<Range, boolean> {
   return pipe(
     asRange,
     (range: Range) => (test: Range) => alternative(
-      pipe(
-        asRange,
-        (test: Range) => includes(test)(range),
-      ),
+      (test: Range) => includes(test)(range),
       ret(false),
     )(test),
   )(range);
