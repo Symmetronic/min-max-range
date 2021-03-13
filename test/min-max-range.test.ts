@@ -11,6 +11,7 @@ import {
   length,
   max,
   min,
+  reverse,
   topLeft,
   topRight,
 } from '../src/min-max-range';
@@ -277,6 +278,31 @@ describe('min-max-range', () => {
       for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
         expect(min(MULTI_DIM_RANGE))
           .toEqual(MULTI_DIM_RANGE.map(r => Math.min(...r)));
+      }
+    });
+  });
+
+  describe('reverse', () => {
+    it('throws an error if input is no range', () => {
+      for (const INVALID_RANGE of INVALID_RANGES) {
+        expect(() => {
+          reverse(INVALID_RANGE);
+        }).toThrowError();
+      }
+    });
+
+    it('returns empty range for empty range', () => {
+      expect(reverse(EMPTY_RANGE)).toEqual(EMPTY_RANGE);
+    });
+
+    it('reverses values of one-dimensional range', () => {
+      expect(reverse(RANGE_1D)).toEqual([RANGE_1D[1], RANGE_1D[0]]);
+    });
+
+    it('reverses values of multi-dimensional range', () => {
+      for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
+        expect(reverse(MULTI_DIM_RANGE))
+          .toEqual(MULTI_DIM_RANGE.map(r => [r[1], r[0]]));
       }
     });
   });

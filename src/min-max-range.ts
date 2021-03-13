@@ -217,6 +217,28 @@ export function min(range: Range): undefined | number | number[] {
 }
 
 /**
+ * Return range with values in each dimensions swapped.
+ * @param   range The range.
+ * @returns       Range with values in each dimension swapped.
+ */
+export function reverse(range: Range): Range {
+  return pipe(
+    asRange,
+    alternative(
+      pipe(
+        asRange1D,
+        (range: Range1D) => [last(range), first(range)],
+      ),
+      pipe(
+        asMultiDimRange,
+        map((el: Range1D) => asRange1D(reverse(el))),
+      ),
+      ret([]),
+    ),
+  )(range);
+}
+
+/**
  * Return top-left coordinates of two-dimensional range. 
  * @param   range Two-dimensional range.
  * @returns       Top-left coordinates.
