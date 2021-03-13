@@ -24,6 +24,8 @@ import {
   isCouple,
   isNumber,
   map,
+  max as maxOfArray,
+  min as minOfArray,
   pipe,
   ret,
 } from './utils';
@@ -138,6 +140,50 @@ export function length(range: Range): number | number[] {
         map((el: Range1D) => asNumber(length(el))),
       ),
       ret(0),
+    ),
+  )(range);
+}
+
+/**
+ * Return maximum value of each dimension of a range.
+ * @param   range The range.
+ * @returns       Maximum value of each dimension of the range.
+ */
+export function max(range: Range): undefined | number | number[] {
+  return pipe(
+    asRange,
+    alternative(
+      pipe(
+        asRange1D,
+        maxOfArray,
+      ),
+      pipe(
+        asMultiDimRange,
+        map((el: Range1D) => asNumber(max(el))),
+      ),
+      ret(undefined),
+    ),
+  )(range);
+}
+
+/**
+ * Return minimum value of each dimension of a range.
+ * @param   range The range.
+ * @returns       Minimum value of each dimension of the range.
+ */
+export function min(range: Range): undefined | number | number[] {
+  return pipe(
+    asRange,
+    alternative(
+      pipe(
+        asRange1D,
+        minOfArray,
+      ),
+      pipe(
+        asMultiDimRange,
+        map((el: Range1D) => asNumber(min(el))),
+      ),
+      ret(undefined),
     ),
   )(range);
 }

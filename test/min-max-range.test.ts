@@ -7,6 +7,8 @@ import {
   isRange2D,
   last,
   length,
+  max,
+  min,
 } from '../src/min-max-range';
 
 import {
@@ -175,6 +177,56 @@ describe('min-max-range', () => {
       for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
         expect(length(MULTI_DIM_RANGE))
           .toEqual(MULTI_DIM_RANGE.map(r => Math.abs(r[0] - r[1])));
+      }
+    });
+  });
+
+  describe('max', () => {
+    it('throws an error if input is no range', () => {
+      for (const INVALID_RANGE of INVALID_RANGES) {
+        expect(() => {
+          max(INVALID_RANGE);
+        }).toThrowError();
+      }
+    });
+
+    it('returns undefined for empty range', () => {
+      expect(max(EMPTY_RANGE)).toBe(undefined);
+    });
+
+    it('returns maximum value of one-dimensional range', () => {
+      expect(max(RANGE_1D)).toBe(Math.max(...RANGE_1D));
+    });
+
+    it('returns maximum value of multi-dimensional range', () => {
+      for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
+        expect(max(MULTI_DIM_RANGE))
+          .toEqual(MULTI_DIM_RANGE.map(r => Math.max(...r)));
+      }
+    });
+  });
+
+  describe('min', () => {
+    it('throws an error if input is no range', () => {
+      for (const INVALID_RANGE of INVALID_RANGES) {
+        expect(() => {
+          min(INVALID_RANGE);
+        }).toThrowError();
+      }
+    });
+
+    it('returns undefined for empty range', () => {
+      expect(min(EMPTY_RANGE)).toBe(undefined);
+    });
+
+    it('returns minimum value of one-dimensional range', () => {
+      expect(min(RANGE_1D)).toBe(Math.min(...RANGE_1D));
+    });
+
+    it('returns minimum value of multi-dimensional range', () => {
+      for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
+        expect(min(MULTI_DIM_RANGE))
+          .toEqual(MULTI_DIM_RANGE.map(r => Math.min(...r)));
       }
     });
   });

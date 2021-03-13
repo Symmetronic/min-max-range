@@ -179,6 +179,24 @@ export function map(transform: Transform): Transform<any[], any[]> {
 }
 
 /**
+ * Return maximum value of array of numbers.
+ * @param   values Array of numbers.
+ * @returns        Maximum value.
+ */
+export function max(values: number[]): number {
+  return Math.max(...values);
+}
+
+/**
+ * Return minimum value of array of numbers.
+ * @param   values Array of numbers.
+ * @returns        Minimum value.
+ */
+export function min(values: number[]): number {
+  return Math.min(...values);
+}
+
+/**
  * Return function to apply several functions in order on value.
  * @param   transforms Functions to apply.
  * @returns            Function to apply several functions in order on value.

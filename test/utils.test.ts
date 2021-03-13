@@ -11,6 +11,8 @@ import {
   isCouple,
   isNumber,
   map,
+  max,
+  min,
   pipe,
   ret,
   Transform,
@@ -250,6 +252,18 @@ describe('utils', () => {
     it('returns a mapping function', () => {
       const mapper: Transform<any[], any[]> = map(() => 42);
       expect(mapper([1, 2, 3])).toEqual([42, 42, 42]);
+    });
+  });
+
+  describe('max', () => {
+    it('returns the maximum value of an array of numbers', () => {
+      expect(max([-4, 8, 10, 2])).toBe(10);
+    });
+  });
+
+  describe('min', () => {
+    it('returns the minimum value of an array of number', () => {
+      expect(min([-3, 5, 0, -12])).toBe(-12);
     });
   });
 
