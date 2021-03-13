@@ -314,6 +314,24 @@ export function min(range: Range): undefined | number | number[] {
 }
 
 /**
+ * Return method to check if range is part of another.
+ * @param   range Reference range
+ * @returns       Method to check if reference range is part of another.
+ */
+export function partOf(range: Range): Transform<Range, boolean> {
+  return pipe(
+    asRange,
+    (range: Range) => (test: Range) => alternative(
+      pipe(
+        asRange,
+        (test: Range) => includes(test)(range),
+      ),
+      ret(false),
+    )(test),
+  )(range);
+}
+
+/**
  * Return range with values in each dimensions swapped.
  * @param   range The range.
  * @returns       Range with values in each dimension swapped.

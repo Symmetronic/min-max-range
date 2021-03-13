@@ -14,6 +14,7 @@ import {
   mean,
   min,
   MultiDimRange,
+  partOf,
   Range,
   reverse,
   shift,
@@ -389,6 +390,84 @@ describe('min-max-range', () => {
       for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
         expect(min(MULTI_DIM_RANGE))
           .toEqual(MULTI_DIM_RANGE.map(r => Math.min(...r)));
+      }
+    });
+  });
+
+  describe('partOf', () => {
+    it('throws an error if input is no range', () => {
+      for (const INVALID_RANGE of INVALID_RANGES) {
+        expect(() => {
+          partOf(INVALID_RANGE);
+        }).toThrowError();
+      }
+    });
+
+    it('returns false if test input is no range', () => {
+      const range1DPartOf = partOf(RANGE_1D);
+      for (const INVALID_RANGE of INVALID_RANGES) {
+        expect(range1DPartOf(INVALID_RANGE)).toBe(false);
+      }
+    });
+
+    it('returns false for empty range', () => {
+      const emptyRangePartOf = partOf(EMPTY_RANGE);
+      for (const RANGE of RANGES) {
+        expect(emptyRangePartOf(RANGE)).toBe(false);
+      }
+    });
+
+    it('returns true if one-dimensional range is part of another', () => {
+      expect(partOf(RANGE_1D)(RANGE_1D)).toBe(true);
+      const rand1: number = Math.random();
+      const rand2: number = Math.random();
+      expect(
+        partOf([
+          rand1 * RANGE_1D[0] + (1 - rand1) * RANGE_1D[1],
+          rand2 * RANGE_1D[0] + (1 - rand2) * RANGE_1D[1],
+        ])(RANGE_1D)
+      ).toBe(true);
+    });
+
+    it('returns false if one-dimensional range is not part another', () => {
+      const notPartOfs: Range[] = [
+        EMPTY_RANGE,
+        ...MULTI_DIM_RANGES,
+      ];
+      const range1DPartOf = partOf(RANGE_1D);
+      for (const notPartOf of notPartOfs) {
+        expect(range1DPartOf(notPartOf)).toBe(false);
+      }
+    });
+    
+    it('returns true if multi-dimensional range is part of another', () => {
+      for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
+        expect(partOf(MULTI_DIM_RANGE)(MULTI_DIM_RANGE)).toBe(true);
+        expect(
+          partOf(
+            MULTI_DIM_RANGE.map(r => {
+              const rand1: number = Math.random();
+              const rand2: number = Math.random();
+              return [
+                rand1 * r[0] + (1 - rand1) * r[1],
+                rand2 * r[0] + (1 - rand2) * r[1],
+              ];
+            }) as MultiDimRange
+          )(MULTI_DIM_RANGE)
+        ).toBe(true);
+      }
+    });
+
+    it('returns false if multi-dimensional range is not part of another', () => {
+      const notPartOfs: Range[] = [
+        EMPTY_RANGE,
+        RANGE_1D,
+      ];
+      const range2DPartOf = partOf(RANGE_2D);
+      const multiDimRangePartOF = includes(MULTI_DIM_RANGE);
+      for (const notPartOf of notPartOfs) {
+        expect(range2DPartOf(notPartOf)).toBe(false);
+        expect(multiDimRangePartOF(notPartOf)).toBe(false);
       }
     });
   });
