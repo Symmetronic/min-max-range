@@ -11,6 +11,8 @@ export const INVALID_RANGES: Range[] = [
   'foo' as unknown as Range,
   null as unknown as Range,
   undefined as unknown as Range,
+  false as unknown as Range,
+  true as unknown as Range,
   [[]] as unknown as Range,
   { length: 3 } as unknown as Range,
   ((x: any) => x) as unknown as Range,

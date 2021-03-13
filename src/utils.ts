@@ -52,6 +52,18 @@ export function alternative(
 }
 
 /**
+ * Transform value to array or throw error.
+ * @param   value Value to transform.
+ * @returns       Value as array.
+ */
+export function asArray(value: any): any[] {
+  return assert(
+    isArray,
+    (value: any) => `Cannot convert value ${value} to array.`,
+  )(value) as any[];
+}
+
+/**
  * Transform value to empty range or throw error.
  * @param   value Value to transform.
  * @returns       Value as empty range.

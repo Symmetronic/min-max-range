@@ -13,6 +13,7 @@ import {
   mean,
   min,
   reverse,
+  shift,
   sort,
   topLeft,
   topRight,
@@ -27,6 +28,8 @@ import {
   RANGE_1D,
   RANGE_2D,
 } from './mocks';
+
+const arrayOfLength = (length: number) => Array.apply(null, Array(length));
 
 describe('min-max-range', () => {
   describe('bottomLeft', () => {
@@ -331,6 +334,59 @@ describe('min-max-range', () => {
       for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
         expect(reverse(MULTI_DIM_RANGE))
           .toEqual(MULTI_DIM_RANGE.map(r => [r[1], r[0]]));
+      }
+    });
+  });
+
+  describe('shift', () => {
+    it('throws an error if input is no range', () => {
+      for (const INVALID_RANGE of INVALID_RANGES) {
+        expect(() => {
+          shift(INVALID_RANGE, 3);
+        }).toThrowError();
+      }
+    });
+    
+    it('throws an error if range is multi-dimensional and delta has unequal length', () => {
+      expect(() => {
+        shift(
+          MULTI_DIM_RANGE,
+          arrayOfLength(MULTI_DIM_RANGE.length + 1).map(() => 1),
+        );
+      }).toThrowError();
+    });
+
+    it('throws an error if range is multi-dimensional and delta is no number or array of numbers', () => {
+      expect(() => {
+        shift(
+          MULTI_DIM_RANGE,
+          arrayOfLength(MULTI_DIM_RANGE.length)
+            .map(() => 'foo') as unknown as number[],
+        );
+      }).toThrowError();
+    });
+
+    it('returns empty range for empty range', () => {
+      expect(shift(EMPTY_RANGE, 7)).toEqual(EMPTY_RANGE);
+    });
+
+    it('shifts values of one-dimensional range', () => {
+      expect(shift(RANGE_1D, -2)).toEqual([
+        RANGE_1D[0] - 2,
+        RANGE_1D[1] - 2,
+      ]);
+    });
+
+    it('shifts values of multi-dimensional range', () => {
+      for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
+        expect(shift(MULTI_DIM_RANGE, 5))
+          .toEqual(MULTI_DIM_RANGE.map(r => [r[0] + 5, r[1] + 5]));
+        expect(
+          shift(
+            MULTI_DIM_RANGE,
+            arrayOfLength(MULTI_DIM_RANGE.length).map((_, i) => -2 * i),
+          )
+        ).toEqual(MULTI_DIM_RANGE.map((r, i) => [r[0] - 2 * i, r[1] - 2 * i]));
       }
     });
   });

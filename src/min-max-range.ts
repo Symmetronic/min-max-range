@@ -11,6 +11,7 @@ export {
 
 import {
   Coordinates,
+  MultiDimRange,
   Range,
   Range1D,
   Range2D,
@@ -19,11 +20,14 @@ import {
 import {
   abs,
   alternative,
+  asArray,
+  asEmptyRange,
   asMultiDimRange,
   asNumber,
   asRange,
   asRange1D,
   asRange2D,
+  assert,
   isArray,
   isCouple,
   isNumber,
@@ -43,7 +47,7 @@ import {
 export function bottomLeft(range: Range2D): Coordinates {
   return pipe(
     asRange2D,
-    (range: Range2D) => [asNumber(min(range[0])), asNumber(min(range[1]))],
+    (range: Range2D) => [min(range[0]), min(range[1])],
   )(range);
 }
 
@@ -55,7 +59,7 @@ export function bottomLeft(range: Range2D): Coordinates {
 export function bottomRight(range: Range2D): Coordinates {
   return pipe(
     asRange2D,
-    (range: Range2D) => [asNumber(max(range[0])), asNumber(min(range[1]))],
+    (range: Range2D) => [max(range[0]), min(range[1])],
   )(range);
 }
 
@@ -70,13 +74,16 @@ export function first(range: Range): undefined | number | number[] {
     alternative(
       pipe(
         asRange1D,
-        (range: Range1D) => asNumber(range[0]),
+        (range: Range1D) => range[0],
       ),
       pipe(
         asMultiDimRange,
         map((el: Range1D) => asNumber(first(el))),
       ),
-      ret(undefined),
+      pipe(
+        asEmptyRange,
+        ret(undefined),
+      ),
     ),
   )(range);
 }
@@ -98,7 +105,7 @@ export function isEmptyRange(value: any): boolean {
 export function isMultiDimRange(value: any): boolean {
   return (
     isArray(value) && value.length >= 2
-    && (value as Array<any>).every((el) => isRange1D(el))
+    && (value as any[]).every((el) => isRange1D(el))
   );
 }
 
@@ -117,7 +124,7 @@ export function isRange(value: any): boolean {
  * @returns       True if value is one-dimensional range, otherwise false. 
  */
 export function isRange1D(value: any): boolean {
-  return isCouple(value) && (value as Array<any>).every((el) => isNumber(el));
+  return isCouple(value) && (value as any[]).every((el) => isNumber(el));
 }
 
 /**
@@ -126,7 +133,7 @@ export function isRange1D(value: any): boolean {
  * @returns       True if value is two-dimensional range, otherwise false.
  */
 export function isRange2D(value: any): boolean {
-  return isCouple(value) && (value as Array<any>).every((el) => isRange1D(el));
+  return isCouple(value) && (value as any[]).every((el) => isRange1D(el));
 }
 
 /**
@@ -140,13 +147,16 @@ export function last(range: Range): undefined | number | number[] {
     alternative(
       pipe(
         asRange1D,
-        (range: Range1D) => asNumber(range[1]),
+        (range: Range1D) => range[1],
       ),
       pipe(
         asMultiDimRange,
         map((el: Range1D) => asNumber(last(el))),
       ),
-      ret(undefined),
+      pipe(
+        asEmptyRange,
+        ret(undefined),
+      ),
     ),
   )(range);
 }
@@ -168,7 +178,10 @@ export function length(range: Range): number | number[] {
         asMultiDimRange,
         map((el: Range1D) => asNumber(length(el))),
       ),
-      ret(0),
+      pipe(
+        asEmptyRange,
+        ret(0),
+      ),
     ),
   )(range);
 }
@@ -190,7 +203,10 @@ export function max(range: Range): undefined | number | number[] {
         asMultiDimRange,
         map((el: Range1D) => asNumber(max(el))),
       ),
-      ret(undefined),
+      pipe(
+        asEmptyRange,
+        ret(undefined),
+      ),
     ),
   )(range);
 }
@@ -212,7 +228,10 @@ export function mean(range: Range): undefined | number | number[] {
         asMultiDimRange,
         map((el: Range1D) => asNumber(mean(el))),
       ),
-      ret(undefined),
+      pipe(
+        asEmptyRange,
+        ret(undefined),
+      ),
     ),
   )(range);
 }
@@ -234,7 +253,10 @@ export function min(range: Range): undefined | number | number[] {
         asMultiDimRange,
         map((el: Range1D) => asNumber(min(el))),
       ),
-      ret(undefined),
+      pipe(
+        asEmptyRange,
+        ret(undefined),
+      ),
     ),
   )(range);
 }
@@ -256,7 +278,73 @@ export function reverse(range: Range): Range {
         asMultiDimRange,
         map((el: Range1D) => asRange1D(reverse(el))),
       ),
-      ret([]),
+      pipe(
+        asEmptyRange,
+        ret([]),
+      ),
+    ),
+  )(range);
+}
+
+/**
+ * Move range by a specified delta.
+ * @param   range Range to move. 
+ * @param   delta Delta to move range by. Has to have equal length as range in 
+ *                case of multi-dimensional ranges.
+ * @returns       Range moved by delta.
+ */
+export function shift(
+  range: Range,
+  delta: number | number[],
+): Range {
+  return pipe(
+    asRange,
+    alternative(
+      /* One-dimensional range. */
+      pipe(
+        asRange1D,
+        (range: Range1D) => pipe(
+          asNumber,
+          (delta: number) => [
+            asNumber(first(range)) + delta,
+            asNumber(last(range)) + delta,
+          ],
+        )(delta),
+      ),
+      /* Multi-dimensional range. */
+      pipe(
+        asMultiDimRange,
+        (range: MultiDimRange) => alternative(
+          /* Delta is number. */
+          pipe(
+            asNumber,
+            (delta: number) => (
+              map((el: Range1D) => asRange1D(shift(el, delta)))(range)
+            ),
+          ),
+          /* Delta is array. */
+          pipe(
+            asArray,
+            assert(
+              (delta: any[]) => range.length === delta.length,
+              (delta: any[]) => (
+                `Invalid delta ${delta} has length unequal to length of range 
+                ${range}.`
+              ),
+            ),
+            (delta: any[]) => (
+              range.map((el: Range1D, i: number) =>
+                asRange1D(shift(el, asNumber(delta[i])))
+              )
+            ),
+          ),
+        )(delta),
+      ),
+      /* Empty range. */
+      pipe(
+        asEmptyRange,
+        ret([]),
+      ),
     ),
   )(range);
 }
@@ -273,13 +361,16 @@ export function sort(range: Range): Range {
     alternative(
       pipe(
         asRange1D,
-        (range: Range1D) => [asNumber(min(range)), asNumber(max(range))],
+        (range: Range1D) => [min(range), max(range)],
       ),
       pipe(
         asMultiDimRange,
         map((el: Range1D) => asRange1D(sort(el))),
       ),
-      ret([]),
+      pipe(
+        asEmptyRange,
+        ret([]),
+      ),
     ),
   )(range);
 }

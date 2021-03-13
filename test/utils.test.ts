@@ -1,6 +1,7 @@
 import {
   abs,
   alternative,
+  asArray,
   asEmptyRange,
   asMultiDimRange,
   asNumber,
@@ -61,6 +62,31 @@ describe('utils', () => {
     });
   });
 
+  describe('asArray', () => {
+    it('throws error if value is not array', () => {
+      const noArrays: any[] = [
+        42,
+        'foo',
+        (x: any) => x,
+        {},
+        null,
+        undefined,
+        false,
+        true
+      ];
+      for (const noArray of noArrays) {
+        expect(() => {
+          asArray(noArray);
+        }).toThrowError();
+      }
+    });
+
+    it('returns value if array', () => {
+      expect(asArray([1, 2, 3])).toEqual([1, 2, 3]);
+      expect(asArray(['foo', 42, {}])).toEqual(['foo', 42, {}]);
+    });
+  });
+
   describe('asEmptyRange', () => {
     it('throws error if value is not empty range', () => {
       const nonEmptyRanges: any[] = [
@@ -108,6 +134,10 @@ describe('utils', () => {
         {},
         (x: any) => x,
         'foo',
+        undefined,
+        null,
+        false,
+        true,
       ];
       for (const noNumber of noNumbers) {
         expect(() => {
@@ -200,6 +230,9 @@ describe('utils', () => {
         'foobar',
         {},
         (x: any) => x,
+        undefined,
+        false,
+        true,
       ];
       for (const noArray of noArrays) {
         expect(isArray(noArray)).toBe(false);
@@ -220,6 +253,10 @@ describe('utils', () => {
         'foobar',
         {},
         (x: any) => x,
+        undefined,
+        null,
+        false,
+        true,
         [42],
         [[4, 2]],
         [1, 2, 3],
@@ -243,6 +280,10 @@ describe('utils', () => {
         [],
         {},
         (x: any) => x,
+        undefined,
+        null,
+        false,
+        true,
       ];
       for (const noNumber of noNumbers) {
         expect(isNumber(noNumber)).toBe(false);
