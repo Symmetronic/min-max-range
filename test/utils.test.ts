@@ -8,6 +8,7 @@ import {
   asRange1D,
   asRange2D,
   assert,
+  hasLength,
   isArray,
   isCouple,
   isNumber,
@@ -209,6 +210,35 @@ describe('utils', () => {
           () => 'an error occured',
         )('bar')
       ).toBe('bar');
+    });
+  });
+
+  describe('hasLength', () => {
+    it('throws error if value is no array', () => {
+      const length: number = 2;
+      const noArrays: any[] = [
+        42,
+        'foobar',
+        (x: any) => x,
+        { length: length },
+      ];
+      for (const noArray of noArrays) {
+        expect(() => {
+          hasLength(length)(noArray);
+        }).toThrowError();
+      }
+    });
+
+    it('throws error if value does not have the desired length', () => {
+      expect(() => {
+        hasLength(3)([1, 2]);
+      }).toThrowError();
+    });
+
+    it('returns value if has desired length', () => {
+      expect(hasLength(0)([])).toEqual([]);
+      expect(hasLength(1)([42])).toEqual([42]);
+      expect(hasLength(3)([1, 2, 3])).toEqual([1, 2, 3]);
     });
   });
 

@@ -20,14 +20,13 @@ import {
 import {
   abs,
   alternative,
-  asArray,
   asEmptyRange,
   asMultiDimRange,
   asNumber,
   asRange,
   asRange1D,
   asRange2D,
-  assert,
+  hasLength,
   isArray,
   isCouple,
   isNumber,
@@ -150,15 +149,7 @@ export function inside(range: Range): Transform<number | number[], boolean> {
         pipe(
           asMultiDimRange,
           (range: MultiDimRange) => pipe(
-            asArray,
-            // TODO: Capsulate and reuse function in asEqualLength
-            assert(
-              (test: any[]) => range.length === test.length,
-              (test: any[]) => (
-                `Invalid test array ${test} has length unequal to length of 
-                range ${range}.`
-              ),
-            ),
+            hasLength(range.length),
             (test: any[]) => (
               range.every((el: Range1D, i: number) =>
                 inside(el)(asNumber(test[i]))
@@ -205,14 +196,7 @@ export function intersect(range: Range): Transform<Range, Range> {
           asMultiDimRange,
           (range: MultiDimRange) => pipe(
             asMultiDimRange,
-            // TODO: Capsulate and reuse function in asEqualLength
-            assert(
-              (test: MultiDimRange[]) => range.length === test.length,
-              (test: MultiDimRange[]) => (
-                `Invalid test range ${test} has length unequal to length of 
-                range ${range}.`
-              ),
-            ),
+            hasLength(range.length),
             (test: MultiDimRange) => (
               range.map((el: Range1D, i: number) => intersect(el)(test[i]))
             ),
@@ -502,15 +486,7 @@ export function shift(
           ),
           /* Delta is array. */
           pipe(
-            asArray,
-            // TODO: Capsulate and reuse function in asEqualLength
-            assert(
-              (delta: any[]) => range.length === delta.length,
-              (delta: any[]) => (
-                `Invalid delta ${delta} has length unequal to length of range 
-                ${range}.`
-              ),
-            ),
+            hasLength(range.length),
             (delta: any[]) => (
               range.map((el: Range1D, i: number) =>
                 asRange1D(shift(el, asNumber(delta[i])))

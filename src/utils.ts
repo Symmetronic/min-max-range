@@ -155,6 +155,23 @@ export function assert(
 }
 
 /**
+ * Return method to transform value to array with length or throw error.
+ * @param  length Desired length.
+ * @return        Method to transform value to array with length.
+ */
+export function hasLength(length: number): Transform<any[], any[]> {
+  return (array: any[]) => pipe(
+    asArray,
+    assert(
+      (array: any[]) => (array.length === length),
+      (array: any[]) => (
+        `Array ${array} should have length ${length} but has ${array.length}.`
+      )
+    ),
+  )(array) as any[];
+}
+
+/**
  * Check if value is an array.
  * @param   value Value to test.
  * @returns       True if value is an array, otherwise false.
