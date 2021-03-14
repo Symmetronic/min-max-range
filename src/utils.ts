@@ -213,7 +213,14 @@ export function map(transform: Transform): Transform<any[], any[]> {
  * @returns        Maximum value.
  */
 export function max(values: number[]): number {
-  return Math.max(...values);
+  let max: number | undefined = undefined;
+  for (const value of values) {
+    if (max === undefined || value > max) max = value;
+  }
+  if (max === undefined) {
+    throw new TypeError('Cannot determine maximum value of empty array.');
+  }
+  return max;
 }
 
 /**
@@ -231,7 +238,14 @@ export function mean(values: number[]): number {
  * @returns        Minimum value.
  */
 export function min(values: number[]): number {
-  return Math.min(...values);
+  let min: number | undefined = undefined;
+  for (const value of values) {
+    if (min === undefined || value < min) min = value;
+  }
+  if (min === undefined) {
+    throw new TypeError('Cannot determine minimum value of empty array.');
+  }
+  return min;
 }
 
 /**
