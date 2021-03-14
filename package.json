@@ -4,7 +4,18 @@
   "description": "Implementation of range data structures using plain JavaScript arrays.",
   "keywords": [
     "array",
-    "range"
+    "includes",
+    "inside",
+    "intersection",
+    "length",
+    "max",
+    "mean",
+    "min",
+    "partOf",
+    "range",
+    "reverse",
+    "shift",
+    "sort"
   ],
   "main": "dist/min-max-range.umd.js",
   "module": "dist/min-max-range.es5.js",
