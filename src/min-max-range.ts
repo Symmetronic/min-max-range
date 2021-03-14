@@ -173,6 +173,58 @@ export function inside(range: Range): Transform<number | number[], boolean> {
 }
 
 /**
+ * Return method to determine intersection of range with reference.
+ * @param   range Reference range.
+ * @returns       Method to determine intersection of range with reference.
+ */
+export function intersect(range: Range): Transform<Range, Range> {
+  return pipe(
+    asRange,
+    (range: Range) => (test: Range) =>
+      alternative(
+        /* One-dimensional range. */
+        pipe(
+          asRange1D,
+          (range: Range1D) =>
+            pipe(
+              (testMin: number) => pipe(
+                (testMax: number) =>
+                  (inside(range)(testMin))
+                  /* Minimum value of test range in reference. */
+                  ? [testMin, Math.min(asNumber(max(range)), testMax)]
+                  : (inside(range)(testMax))
+                  /* Maximum value of test range in reference. */
+                  ? [Math.min(asNumber(min(range))), testMax]
+                  /* No overlap. */
+                  : []
+              )(asNumber(max(test)))
+            )(asNumber(min(test)))
+        ),
+        /* Multi-dimensional range. */
+        pipe(
+          asMultiDimRange,
+          (range: MultiDimRange) => pipe(
+            asMultiDimRange,
+            // TODO: Capsulate and reuse function in asEqualLength
+            assert(
+              (test: MultiDimRange[]) => range.length === test.length,
+              (test: MultiDimRange[]) => (
+                `Invalid test range ${test} has length unequal to length of 
+                range ${range}.`
+              ),
+            ),
+            (test: MultiDimRange) => (
+              range.map((el: Range1D, i: number) => intersect(el)(test[i]))
+            ),
+          )(test),
+        ),
+        /* Return empty range if error occurs. */
+        ret([])
+      )(range),
+  )(range);
+}
+
+/**
  * Check if value is empty range.
  * @param   value Value to test.
  * @returns       True if value is empty range, otherwise false.
@@ -451,6 +503,7 @@ export function shift(
           /* Delta is array. */
           pipe(
             asArray,
+            // TODO: Capsulate and reuse function in asEqualLength
             assert(
               (delta: any[]) => range.length === delta.length,
               (delta: any[]) => (

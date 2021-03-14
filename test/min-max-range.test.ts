@@ -4,6 +4,7 @@ import {
   first,
   includes,
   inside,
+  intersect,
   isEmptyRange,
   isMultiDimRange,
   isNonEmptyRange,
@@ -177,11 +178,12 @@ describe('min-max-range', () => {
         EMPTY_RANGE,
         RANGE_1D,
       ];
-      const includedInRange2D = includes(RANGE_2D);
-      const includedInMultiDimRange = includes(MULTI_DIM_RANGE);
-      for (const notIncludedRange of notIncludedRanges) {
-        expect(includedInRange2D(notIncludedRange)).toBe(false);
-        expect(includedInMultiDimRange(notIncludedRange)).toBe(false);
+      for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
+        const includedInRange = includes(MULTI_DIM_RANGE);
+        for (const notIncludedRange of notIncludedRanges) {
+          expect(includedInRange(notIncludedRange)).toBe(false);
+          expect(includedInRange(notIncludedRange)).toBe(false);
+        }
       }
     });
   });
@@ -262,11 +264,100 @@ describe('min-max-range', () => {
         [1],
         EMPTY_RANGE,
       ];
-      const insideRange2D = inside(RANGE_2D);
-      const insideMultiDimRange = inside(MULTI_DIM_RANGE);
-      for (const notInside of notInsides) {
-        expect(insideRange2D(notInside)).toBe(false);
-        expect(insideMultiDimRange(notInside)).toBe(false);
+      for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
+        const insideRange = inside(MULTI_DIM_RANGE);
+        for (const notInside of notInsides) {
+          expect(insideRange(notInside)).toBe(false);
+        }
+      }
+    });
+  });
+
+  describe('intersect', () => {
+    it('throws an error if input is no range', () => {
+      for (const INVALID_RANGE of INVALID_RANGES) {
+        expect(() => {
+          intersect(INVALID_RANGE);
+        }).toThrowError();
+      }
+    });
+
+    it('returns empty range if test input is no range', () => {
+      for (const RANGE of RANGES) {
+        const intersectRange = intersect(RANGE);
+        for (const INVALID_RANGE of INVALID_RANGES) {
+          expect(intersectRange(INVALID_RANGE)).toEqual([]);
+        }
+      }
+    });
+
+    it('returns empty range if range is multi-dimensional and intersecting range has unequal length', () => {
+      expect(intersect(MULTI_DIM_RANGE)([...MULTI_DIM_RANGE, RANGE_1D]))
+        .toEqual([]);
+    });
+
+    it('returns empty range for empty range', () => {
+      const intersectEmpty = intersect(EMPTY_RANGE);
+      for (const RANGE of RANGES) {
+        expect(intersectEmpty(RANGE)).toEqual([]);
+      }
+    });
+
+    it('returns intersection with one-dimensional range', () => {
+      const intersectRange1D = intersect(RANGE_1D);
+      expect(intersectRange1D(RANGE_1D)).toEqual(RANGE_1D);
+      const min: number = Math.min(...RANGE_1D) - 1;
+      const max: number = (RANGE_1D[0] + RANGE_1D[1]) / 2;
+      expect(intersectRange1D([min, max]))
+        .toEqual([Math.min(...RANGE_1D), max]);
+      expect(intersectRange1D(shift(
+        RANGE_1D,
+        Math.abs(RANGE_1D[0] - RANGE_1D[1]),
+      ))).toEqual([Math.max(...RANGE_1D), Math.max(...RANGE_1D)]);
+      expect(intersectRange1D(shift(
+        RANGE_1D,
+        -Math.abs(RANGE_1D[0] - RANGE_1D[1]),
+      ))).toEqual([Math.min(...RANGE_1D), Math.min(...RANGE_1D)]);
+    });
+
+    it('returns empty range if not intersecting with one-dimensional range', () => {
+      const intersectRange1D = intersect(RANGE_1D);
+      expect(intersectRange1D(shift(
+        RANGE_1D,
+        Math.abs(RANGE_1D[0] - RANGE_1D[1]) + 0.1
+      ))).toEqual([]);
+      expect(intersectRange1D(shift(
+        RANGE_1D,
+        -Math.abs(RANGE_1D[0] - RANGE_1D[1]) - 0.1,
+      ))).toEqual([]);
+    });
+    
+    it('returns intersection with multi-dimensional range', () => {
+      for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
+        const intersectRange = intersect(MULTI_DIM_RANGE);
+        expect(intersectRange(MULTI_DIM_RANGE))
+          .toEqual(MULTI_DIM_RANGE.map(r => [Math.min(...r), Math.max(...r)]));
+        const intersectingRange: MultiDimRange =
+          MULTI_DIM_RANGE.map(r => [(r[0] + r[1]) / 2, r[1]]) as MultiDimRange;
+        expect(intersectRange(intersectingRange)).toEqual(
+          intersectingRange.map(r => [Math.min(...r), Math.max(...r)])
+        );
+      }
+    });
+
+    it('returns empty range if not intersecting with multi-dimensional range', () => {
+      const notIntersectings: any[] = [
+        4,
+        'foo',
+        (x: any) => x,
+        [1],
+        EMPTY_RANGE,
+      ];
+      for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
+        const intersectRange = intersect(MULTI_DIM_RANGE);
+        for (const notIntersecting of notIntersectings) {
+          expect(intersectRange(notIntersecting)).toEqual([]);
+        }
       }
     });
   });
@@ -572,11 +663,12 @@ describe('min-max-range', () => {
         EMPTY_RANGE,
         RANGE_1D,
       ];
-      const range2DPartOf = partOf(RANGE_2D);
-      const multiDimRangePartOF = includes(MULTI_DIM_RANGE);
-      for (const notPartOf of notPartOfs) {
-        expect(range2DPartOf(notPartOf)).toBe(false);
-        expect(multiDimRangePartOF(notPartOf)).toBe(false);
+      for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
+        const rangePartOf = partOf(MULTI_DIM_RANGE);
+        for (const notPartOf of notPartOfs) {
+          expect(rangePartOf(notPartOf)).toBe(false);
+          expect(rangePartOf(notPartOf)).toBe(false);
+        }
       }
     });
   });
