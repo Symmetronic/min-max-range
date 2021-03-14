@@ -148,12 +148,21 @@ export function isMultiDimRange(value: any): boolean {
 }
 
 /**
+ * Check if value is non-empty range.
+ * @param   value Value to test.
+ * @returns       True if value is non-empty range, otherwise false.
+ */
+export function isNonEmptyRange(value: any): boolean {
+  return isRange1D(value) || isMultiDimRange(value);
+}
+
+/**
  * Check if value is range.
  * @param   value Value to test.
  * @returns       True if value is range, otherwise false.
  */
 export function isRange(value: any): boolean {
-  return isEmptyRange(value) || isRange1D(value) || isMultiDimRange(value);
+  return isEmptyRange(value) || isNonEmptyRange(value);
 }
 
 /**

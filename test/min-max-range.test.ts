@@ -5,6 +5,7 @@ import {
   includes,
   isEmptyRange,
   isMultiDimRange,
+  isNonEmptyRange,
   isRange,
   isRange1D,
   isRange2D,
@@ -216,6 +217,28 @@ describe('min-max-range', () => {
       ];
       for (const nonMultiDimRange of nonMultiDimRanges) {
         expect(isMultiDimRange(nonMultiDimRange)).toBe(false);
+      }
+    });
+  });
+
+  describe('isNonEmptyRange', () => {
+    it('returns true if non-empty range', () => {
+      const nonEmptyRanges: any[] = [
+        RANGE_1D,
+        ...MULTI_DIM_RANGES,
+      ];
+      for (const nonEmptyRange of nonEmptyRanges) {
+        expect(isNonEmptyRange(nonEmptyRange)).toBe(true);
+      } 
+    });
+
+    it('returns false if not non-empty range', () => {
+      const noNonEmptyRanges: any[] = [
+        ...INVALID_RANGES,
+        EMPTY_RANGE,
+      ];
+      for (const noNonEmptyRange of noNonEmptyRanges) {
+        expect(isNonEmptyRange(noNonEmptyRange)).toBe(false);
       }
     });
   });
