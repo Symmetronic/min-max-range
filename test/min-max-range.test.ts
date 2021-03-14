@@ -3,6 +3,7 @@ import {
   bottomRight,
   first,
   includes,
+  inside,
   isEmptyRange,
   isMultiDimRange,
   isNonEmptyRange,
@@ -181,6 +182,91 @@ describe('min-max-range', () => {
       for (const notIncludedRange of notIncludedRanges) {
         expect(includedInRange2D(notIncludedRange)).toBe(false);
         expect(includedInMultiDimRange(notIncludedRange)).toBe(false);
+      }
+    });
+  });
+
+  describe('inside', () => {
+    it('throws an error if input is no range', () => {
+      for (const INVALID_RANGE of INVALID_RANGES) {
+        expect(() => {
+          inside(INVALID_RANGE);
+        }).toThrowError();
+      }
+    });
+
+    it('returns false if test input is not of type number or number[]', () => {
+      const nonNumerics: any[] = [
+        {},
+        '3.14',
+        (x: any) => x,
+        [],
+        [1, 2, 'foo'],
+      ];
+      const insideRange1D = inside(RANGE_1D);
+      for (const nonNumeric of nonNumerics) {
+        expect(insideRange1D(nonNumeric)).toBe(false);
+      }
+    });
+
+    it('returns false for empty range', () => {
+      const numerics: any[] = [
+        0,
+        3.14,
+        42,
+        -99,
+        [1, 2, 3, 4],
+      ];
+      const insideEmpty = inside(EMPTY_RANGE);
+      for (const numeric of numerics) {
+        expect(insideEmpty(numeric)).toBe(false);
+      }
+    });
+
+    it('returns true if inside one-dimensional range', () => {
+      const insideRange1D = inside(RANGE_1D);
+      expect(insideRange1D(RANGE_1D[0])).toBe(true);
+      expect(insideRange1D(RANGE_1D[1])).toBe(true);
+      const rand: number = Math.random();
+      expect(insideRange1D(rand * RANGE_1D[0] + (1 - rand) * RANGE_1D[1]))
+        .toBe(true);
+    });
+
+    it('returns false if not inside one-dimensional range', () => {
+      const insideRange1D = inside(RANGE_1D);
+      expect(insideRange1D(Math.min(...RANGE_1D) - 1)).toBe(false);
+      expect(insideRange1D(Math.max(...RANGE_1D) + 1)).toBe(false);
+    });
+    
+    it('returns true if inside multi-dimensional range', () => {
+      for (const MULTI_DIM_RANGE of MULTI_DIM_RANGES) {
+        const insideRange = inside(MULTI_DIM_RANGE);
+        expect(insideRange(MULTI_DIM_RANGE.map(r => r[0]))).toBe(true);
+        expect(insideRange(MULTI_DIM_RANGE.map(r => r[1]))).toBe(true);
+        expect(
+          insideRange(
+            MULTI_DIM_RANGE.map(r => {
+              const rand: number = Math.random();
+              return rand * r[0] + (1 - rand) * r[1];
+            }) as number[]
+          )
+        ).toBe(true);
+      }
+    });
+
+    it('returns false if not inside multi-dimensional range', () => {
+      const notInsides: any[] = [
+        4,
+        'foo',
+        (x: any) => x,
+        [1],
+        EMPTY_RANGE,
+      ];
+      const insideRange2D = inside(RANGE_2D);
+      const insideMultiDimRange = inside(MULTI_DIM_RANGE);
+      for (const notInside of notInsides) {
+        expect(insideRange2D(notInside)).toBe(false);
+        expect(insideMultiDimRange(notInside)).toBe(false);
       }
     });
   });

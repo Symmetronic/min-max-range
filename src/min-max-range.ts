@@ -127,6 +127,52 @@ export function includes(range: Range): Transform<Range, boolean> {
 }
 
 /**
+ * Return method to check if value is included in range.
+ * @param   range Reference range.
+ * @returns       Method to check if value is included in range.
+ */
+export function inside(range: Range): Transform<number | number[], boolean> {
+  return pipe(
+    asRange,
+    (range: Range) => (test: number | number[]) =>
+      alternative(
+        /* One-dimensional range. */
+        pipe(
+          asRange1D,
+          (range: Range1D) => pipe(
+            asNumber,
+            (test: number) => (
+              asNumber(min(range)) <= test && asNumber(max(range)) >= test
+            ),
+          )(test),
+        ),
+        /* Multi-dimensional range. */
+        pipe(
+          asMultiDimRange,
+          (range: MultiDimRange) => pipe(
+            asArray,
+            // TODO: Capsulate and reuse function in asEqualLength
+            assert(
+              (test: any[]) => range.length === test.length,
+              (test: any[]) => (
+                `Invalid test array ${test} has length unequal to length of 
+                range ${range}.`
+              ),
+            ),
+            (test: any[]) => (
+              range.every((el: Range1D, i: number) =>
+                inside(el)(asNumber(test[i]))
+              )
+            ),
+          )(test),
+        ),
+        /* Return false if error occurs. */
+        ret(false),
+      )(range),
+  )(range);
+}
+
+/**
  * Check if value is empty range.
  * @param   value Value to test.
  * @returns       True if value is empty range, otherwise false.
