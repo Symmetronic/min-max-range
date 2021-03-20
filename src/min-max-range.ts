@@ -534,7 +534,7 @@ export function sort(range: Range): Range {
 }
 
 /**
- * Return top-left coordinates of two-dimensional range. 
+ * Return top-left coordinates of two-dimensional range.
  * @param   range Two-dimensional range.
  * @returns       Top-left coordinates.
  */
