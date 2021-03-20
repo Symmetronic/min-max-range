@@ -1,6 +1,6 @@
 {
   "name": "min-max-range",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Implementation of range data structures using plain JavaScript arrays.",
   "keywords": [
     "array",
