@@ -4,23 +4,196 @@
 
 Implementation of range data structures using plain JavaScript arrays.
 
-## Importing this library
-
-### Node Modules
-
-<!-- TODO: Update documentation -->
-
-### CDN
-
-<!-- TODO: Update documentation -->
-
 ## Data Types
 
-<!-- TODO: Add documentation -->
+### EmptyRange
+
+```typescript
+type EmptyRange = [];
+```
+
+### Range1D
+
+```typescript
+type Range1D = [number, number];
+```
+
+### Range2D
+
+```typescript
+type Range2D = [Range1D, Range1D];
+```
+
+### MultiDimRange
+
+```typescript
+type MultiDimRange = [Range1D, Range1D, ...Range1D[]];
+```
+
+### NonEmptyRange
+
+```typescript
+type NoneEmptyRange = Range1D | MultiDimRange;
+```
+
+### Range
+
+```typescript
+type Range = EmptyRange | NonEmptyRange;
+```
+
+### Coordinates2D
+
+```typescript
+type Coordinates2D = [number, number];
+```
+
+### Transform
+
+```typescript
+type Transform<Input, Output> = (value: Input) => Output;
+```
 
 ## Utility Functions
 
-<!-- TODO: Add documentation -->
+### isRange: (value) => boolean
+
+Check if value is range.
+
+- `value` (`any`): Value to test.
+
+### isEmptyRange: (value) => boolean
+
+Check if value is empty range.
+
+- `value` (`any`): Value to test.
+
+### isNonEmptyRange: (value) => boolean
+
+Check if value is non-empty range.
+
+- `value` (`any`): Value to test.
+
+### isRange1D: (value) => boolean
+
+Check if value is one-dimensional range.
+
+- `value` (`any`): Value to test.
+
+### isRange2D: (value) => boolean
+
+Check if value is two-dimensional range.
+
+- `value` (`any`): Value to test.
+
+### isMultiDimRange: (value) => boolean
+
+Check if value is multi-dimensional range.
+
+- `value` (`any`): Value to test.
+
+### min: (range) => undefined | number | number[]
+
+Return minimum value of each dimension of a range.
+
+- `range` (`Range`): The range.
+
+### max: (range) => undefined | number | number[]
+
+Return maximum value of each dimension of a range.
+
+- `range` (`Range`): The range.
+
+### mean: (range) => undefined | number | number[]
+
+Return mean of each dimension of a range.
+
+- `range` (`Range`): The range.
+
+### first: (range) => undefined | number | number[]
+
+Return the first value of each dimension of a range.
+
+- `range` (`Range`): The range.
+
+### last: (range) => undefined | number | number[]
+
+Return the last value of each dimension of a range.
+
+- `range`: (`Range`): The range.
+
+### length: (range) => number | number[]
+
+Return length of each dimension of a range.
+
+- `range` (`Range`): The range.
+
+### bottomLeft: (range) => Coordinates2D
+
+Return bottom-left coordinates of two-dimensional range.
+
+- `range` (`Range2D`): Two-dimensional range.
+
+### bottomRight: (range) => Coordinates2D
+
+Return bottom-right coordinates of two-dimensional range.
+
+- `range` (`Range2D`): Two-dimensional range.
+
+### topLeft: (range) => Coordinates2D
+
+Return top-left coordinates of two-dimensional range.
+
+- `range` (`Range2D`): Two-dimensional range.
+
+### topRight: (range) => Coordinates2D
+
+Return top-right coordinates of two-dimensional range.
+
+- `range` (`Range2D`): Two-dimensional range.
+
+### shift: (range, delta) => Range
+
+Move range by a specified delta.
+
+- `range` (`Range`): Range to move.
+- `delta` (`number | number[]`): Delta to move range by. Has to have equal length as range in case of multi-dimensional ranges.
+
+### sort: (range) => Range
+
+Return range with values in each dimension sorted from lowest to highest.
+
+- `range`: (`Range`): The range.
+
+### reverse: (range) => Range
+
+Return range with values in each dimensions swapped.
+
+- `range` (`Range`): The range.
+
+### inside: (range) => Transform<number | number[], boolean>
+
+Return method to check if value is included in range.
+
+- `range` (`Range`): Reference range.
+
+### includes: (range) => Transform<Range, boolean>
+
+Return method to check if one range is included in another.
+
+- `range` (`Range`): Reference range.
+
+### partOf: (range) => Transform<Range, boolean>
+
+Return method to check if range is part of another.
+
+- `range` (`Range`): Reference range.
+
+### intersect: (range) => Transform<Range, Range>
+
+Return method to determine intersection of range with reference.
+
+- `range` (`Range`): Reference range.
 
 ## NPM Scripts
 
