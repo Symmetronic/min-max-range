@@ -329,6 +329,12 @@ describe('utils', () => {
   });
 
   describe('max', () => {
+    it('throws an error for empty array', () => {
+      expect(() => {
+        max([]);
+      }).toThrowError();
+    });
+
     it('returns the maximum value of an array of numbers', () => {
       expect(max([-4, 8, 10, 2])).toBe(10);
     });
@@ -341,6 +347,12 @@ describe('utils', () => {
   });
 
   describe('min', () => {
+    it('throws an error for empty array', () => {
+      expect(() => {
+        min([]);
+      }).toThrowError();
+    });
+
     it('returns the minimum value of an array of numbers', () => {
       expect(min([-3, 5, 0, -12])).toBe(-12);
     });
