@@ -6,8 +6,11 @@ export {
   Range,
   Range1D,
   Range2D,
-  RangeElement,
 } from './data';
+
+export {
+  Transform,
+} from './utils';
 
 import {
   Coordinates2D,
