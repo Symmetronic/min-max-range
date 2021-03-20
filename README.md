@@ -4,6 +4,18 @@
 
 Implementation of range data structures using plain JavaScript arrays.
 
+## Importing this library
+
+### Node Modules
+
+- Run `npm install min-max-range`
+- Import the utility functions you need and use them in your code.
+
+### CDN
+
+- Put the following script tag `<script src="https://cdn.jsdelivr.net/npm/min-max-range@1/dist/min-max-range.umd.min.js"></script>` in the head of your HTML file.
+- Then you can access the library with the global variable `minMaxRange`
+
 ## Data Types
 
 ### EmptyRange
