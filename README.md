@@ -45,7 +45,7 @@ type MultiDimRange = [Range1D, Range1D, ...Range1D[]];
 ### NonEmptyRange
 
 ```typescript
-type NoneEmptyRange = Range1D | MultiDimRange;
+type NonEmptyRange = Range1D | MultiDimRange;
 ```
 
 ### Range
