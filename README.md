@@ -2,7 +2,7 @@
 
 # min-max-range
 
-Implementation of range data structures using plain JavaScript arrays.
+Implementation of range data structures using plain JavaScript arrays. Built with a [functional programming](https://en.wikipedia.org/wiki/Functional_programming) approach in mind.
 
 ## Importing this library
 
@@ -110,11 +110,29 @@ Return minimum value of each dimension of a range.
 
 - `range` (`Range`): The range.
 
+**Example**
+
+```javascript
+var minOfRange = min([-1, 1]);
+
+console.log(minOfRange);
+// expected output: -1
+```
+
 ### max: (range) => undefined | number | number[]
 
 Return maximum value of each dimension of a range.
 
 - `range` (`Range`): The range.
+
+**Example**
+
+```javascript
+var maxOfRange = max([1, -1]);
+
+console.log(maxOfRange);
+// expected output: 1
+```
 
 ### mean: (range) => undefined | number | number[]
 
@@ -122,11 +140,29 @@ Return mean of each dimension of a range.
 
 - `range` (`Range`): The range.
 
+**Example**
+
+```javascript
+var meanOfRange = mean([-1, 1]);
+
+console.log(meanOfRange);
+// expected output: 0
+```
+
 ### first: (range) => undefined | number | number[]
 
 Return the first value of each dimension of a range.
 
 - `range` (`Range`): The range.
+
+**Example**
+
+```javascript
+var firstOfRange = first([0, 1]);
+
+console.log(firstOfRange);
+// expected output: 0
+```
 
 ### last: (range) => undefined | number | number[]
 
@@ -134,11 +170,29 @@ Return the last value of each dimension of a range.
 
 - `range`: (`Range`): The range.
 
+**Example**
+
+```javascript
+var lastOfRange = last([0, 1]);
+
+console.log(lastOfRange);
+// expected output: 1
+```
+
 ### length: (range) => number | number[]
 
 Return length of each dimension of a range.
 
 - `range` (`Range`): The range.
+
+**Example**
+
+```javascript
+var lengthOfRange = length([-1, 1]);
+
+console.log(lengthOfRange);
+// expected output: 2
+```
 
 ### bottomLeft: (range) => Coordinates2D
 
@@ -146,11 +200,29 @@ Return bottom-left coordinates of two-dimensional range.
 
 - `range` (`Range2D`): Two-dimensional range.
 
+**Example**
+
+```javascript
+var coords = bottomLeft([[0, 1], [0, 1]]);
+
+console.log(coords);
+// expected output: Array [0, 0]
+```
+
 ### bottomRight: (range) => Coordinates2D
 
 Return bottom-right coordinates of two-dimensional range.
 
 - `range` (`Range2D`): Two-dimensional range.
+
+**Example**
+
+```javascript
+var coords = bottomRight([[0, 1], [0, 1]]);
+
+console.log(coords);
+// expected output: Array [1, 0]
+```
 
 ### topLeft: (range) => Coordinates2D
 
@@ -158,11 +230,29 @@ Return top-left coordinates of two-dimensional range.
 
 - `range` (`Range2D`): Two-dimensional range.
 
+**Example**
+
+```javascript
+var coords = topLeft([[0, 1], [0, 1]]);
+
+console.log(coords);
+// expected output: Array [0, 1]
+```
+
 ### topRight: (range) => Coordinates2D
 
 Return top-right coordinates of two-dimensional range.
 
 - `range` (`Range2D`): Two-dimensional range.
+
+**Example**
+
+```javascript
+var coords = topRight([[0, 1], [0, 1]]);
+
+console.log(coords);
+// expected output: Array [1, 1]
+```
 
 ### shift: (range, delta) => Range
 
@@ -171,11 +261,29 @@ Move range by a specified delta.
 - `range` (`Range`): Range to move.
 - `delta` (`number | number[]`): Delta to move range by. Has to have equal length as range in case of multi-dimensional ranges.
 
+**Example**
+
+```javascript
+var shiftedRange = shift([0, 1], -0.5);
+
+console.log(shiftedRange);
+// expected output: Array [-0.5, 0.5]
+```
+
 ### sort: (range) => Range
 
 Return range with values in each dimension sorted from lowest to highest.
 
 - `range`: (`Range`): The range.
+
+**Example**
+
+```javascript
+var sortedRange = sort([1, -1]);
+
+console.log(sortedRange);
+// expected output: Array [-1, 1]
+```
 
 ### reverse: (range) => Range
 
@@ -183,11 +291,29 @@ Return range with values in each dimensions swapped.
 
 - `range` (`Range`): The range.
 
+**Example**
+
+```javascript
+var reversedRange = reverse([0, 1]);
+
+console.log(reversedRange);
+// expected output: Array [1, 0]
+```
+
 ### inside: (range) => Transform<number | number[], boolean>
 
 Return method to check if value is included in range.
 
 - `range` (`Range`): Reference range.
+
+**Example**
+
+```javascript
+var isInside = inside([0, 1]);
+
+console.log(isInside(0.5));
+// expected output: true
+```
 
 ### includes: (range) => Transform<Range, boolean>
 
@@ -195,17 +321,44 @@ Return method to check if one range is included in another.
 
 - `range` (`Range`): Reference range.
 
+**Example**
+
+```javascript
+var isIncluded = includes([-1, 1]);
+
+console.log(isIncluded([0, 1]));
+// expected output: true
+```
+
 ### partOf: (range) => Transform<Range, boolean>
 
 Return method to check if range is part of another.
 
 - `range` (`Range`): Reference range.
 
+**Example**
+
+```javascript
+var isPartOf = partOf([0, 1]);
+
+console.log(isPartOf([-1, 1]));
+// expected output: true
+```
+
 ### intersect: (range) => Transform<Range, Range>
 
 Return method to determine intersection of range with reference.
 
 - `range` (`Range`): Reference range.
+
+**Example**
+
+```javascript
+var intersection = intersect([-1, 1]);
+
+console.log(intersection([0, 2]));
+// expected output: Array [0, 1]
+```
 
 ## NPM Scripts
 
