@@ -38,7 +38,7 @@ export function abs(value: number): number {
  * @returns              Return value of first successful function. 
  */
 export function alternative(
-  ...alternatives: Transform[]
+  ...alternatives: ReadonlyArray<Transform>
 ): Transform {
   return (value: any) => {
     for (const alt of alternatives) {
@@ -159,7 +159,9 @@ export function assert(
  * @param  length Desired length.
  * @return        Method to transform value to array with length.
  */
-export function hasLength(length: number): Transform<any[], any[]> {
+export function hasLength(
+  length: number,
+): Transform<any[], any[]> {
   return (array: any[]) => pipe(
     asArray,
     assert(
@@ -203,8 +205,10 @@ export function isNumber(value: any): boolean {
  * @param   transform Function to apply.
  * @returns           Function to apply function on array.
  */
-export function map(transform: Transform): Transform<any[], any[]> {
-  return (array: any[]) => array.map(el => transform(el));
+export function map(
+  transform: Transform,
+): Transform<ReadonlyArray<any>, any[]> {
+  return (array: ReadonlyArray<any>) => array.map(el => transform(el));
 }
 
 /**
@@ -212,7 +216,7 @@ export function map(transform: Transform): Transform<any[], any[]> {
  * @param   values Array of numbers.
  * @returns        Maximum value.
  */
-export function max(values: number[]): number {
+export function max(values: ReadonlyArray<number>): number {
   let max: number | undefined = undefined;
   for (const value of values) {
     if (max === undefined || value > max) max = value;
@@ -228,7 +232,7 @@ export function max(values: number[]): number {
  * @param   values Array of numbers.
  * @returns        Mean value.
  */
-export function mean(values: number[]): number {
+export function mean(values: ReadonlyArray<number>): number {
   return sum(values) / values.length;
 }
 
@@ -237,7 +241,7 @@ export function mean(values: number[]): number {
  * @param   values Array of numbers.
  * @returns        Minimum value.
  */
-export function min(values: number[]): number {
+export function min(values: ReadonlyArray<number>): number {
   let min: number | undefined = undefined;
   for (const value of values) {
     if (min === undefined || value < min) min = value;
@@ -253,7 +257,7 @@ export function min(values: number[]): number {
  * @param   transforms Functions to apply.
  * @returns            Function to apply several functions in order on value.
  */
-export function pipe(...transforms: Transform[]): Transform {
+export function pipe(...transforms: ReadonlyArray<Transform>): Transform {
   return (value: any) =>
     transforms.reduce((output, transform) => transform(output), value);
 }
@@ -272,6 +276,6 @@ export function ret<T>(value: T): () => T {
  * @param   values Array of numbers
  * @returns        The sum.
  */
-export function sum(values: number[]): number {
+export function sum(values: ReadonlyArray<number>): number {
   return values.reduce((sum, value) => sum + value, 0);
 }

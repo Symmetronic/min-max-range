@@ -47,10 +47,10 @@ import {
  * @param   range Two-dimensional range.
  * @returns       Bottom-left coordinates.
  */
-export function bottomLeft(range: Range2D): Coordinates2D {
+export function bottomLeft(range: Readonly<Range2D>): Coordinates2D {
   return pipe(
     asRange2D,
-    (range: Range2D) => [min(range[0]), min(range[1])],
+    (range: Readonly<Range2D>) => [min(range[0]), min(range[1])],
   )(range);
 }
 
@@ -59,10 +59,10 @@ export function bottomLeft(range: Range2D): Coordinates2D {
  * @param   range Two-dimensional range.
  * @returns       Bottom-right coordinates.
  */
-export function bottomRight(range: Range2D): Coordinates2D {
+export function bottomRight(range: Readonly<Range2D>): Coordinates2D {
   return pipe(
     asRange2D,
-    (range: Range2D) => [max(range[0]), min(range[1])],
+    (range: Readonly<Range2D>) => [max(range[0]), min(range[1])],
   )(range);
 }
 
@@ -71,19 +71,19 @@ export function bottomRight(range: Range2D): Coordinates2D {
  * @param   range The range.
  * @returns       First value of each dimension of the range.
  */
-export function first(range: Range): undefined | number | number[] {
+export function first(range: Readonly<Range>): undefined | number | number[] {
   return pipe(
     asRange,
     alternative(
       /* One-dimensional range. */
       pipe(
         asRange1D,
-        (range: Range1D) => range[0],
+        (range: Readonly<Range1D>) => range[0],
       ),
       /* Multi-dimensional range. */
       pipe(
         asMultiDimRange,
-        map((el: Range1D) => asNumber(first(el))),
+        map((el: Readonly<Range1D>) => asNumber(first(el))),
       ),
       /* Empty range. */
       pipe(
@@ -99,15 +99,17 @@ export function first(range: Range): undefined | number | number[] {
  * @param   range Reference range.
  * @returns       Method to check if a range is included in the reference.
  */
-export function includes(range: Range): Transform<Range, boolean> {
+export function includes(
+  range: Readonly<Range>,
+): Transform<Readonly<Range>, boolean> {
   return pipe(
     asRange,
-    (range: Range) => (test: Range) =>
+    (range: Readonly<Range>) => (test: Readonly<Range>) =>
       alternative(
         /* One-dimensional range. */
         pipe(
           asRange1D,
-          (range: Range1D) => (
+          (range: Readonly<Range1D>) => (
             asNumber(min(range)) <= asNumber(min(test))
             && asNumber(max(range)) >= asNumber(max(test))
           ),
@@ -115,9 +117,9 @@ export function includes(range: Range): Transform<Range, boolean> {
         /* Multi-dimensional range. */
         pipe(
           asMultiDimRange,
-          (range: MultiDimRange) => (
+          (range: Readonly<MultiDimRange>) => (
             range.length === test.length
-            && range.every((el: Range1D, i: number) => (
+            && range.every((el: Readonly<Range1D>, i: number) => (
               includes(el)(asRange1D(test[i])))
             )
           ),
@@ -133,15 +135,17 @@ export function includes(range: Range): Transform<Range, boolean> {
  * @param   range Reference range.
  * @returns       Method to check if value is included in range.
  */
-export function inside(range: Range): Transform<number | number[], boolean> {
+export function inside(
+  range: Readonly<Range>,
+): Transform<number | number[], boolean> {
   return pipe(
     asRange,
-    (range: Range) => (test: number | number[]) =>
+    (range: Readonly<Range>) => (test: number | number[]) =>
       alternative(
         /* One-dimensional range. */
         pipe(
           asRange1D,
-          (range: Range1D) => pipe(
+          (range: Readonly<Range1D>) => pipe(
             asNumber,
             (test: number) => (
               asNumber(min(range)) <= test && asNumber(max(range)) >= test
@@ -151,10 +155,10 @@ export function inside(range: Range): Transform<number | number[], boolean> {
         /* Multi-dimensional range. */
         pipe(
           asMultiDimRange,
-          (range: MultiDimRange) => pipe(
+          (range: Readonly<MultiDimRange>) => pipe(
             hasLength(range.length),
-            (test: any[]) => (
-              range.every((el: Range1D, i: number) =>
+            (test: ReadonlyArray<any>) => (
+              range.every((el: Readonly<Range1D>, i: number) =>
                 inside(el)(asNumber(test[i]))
               )
             ),
@@ -171,15 +175,17 @@ export function inside(range: Range): Transform<number | number[], boolean> {
  * @param   range Reference range.
  * @returns       Method to determine intersection of range with reference.
  */
-export function intersect(range: Range): Transform<Range, Range> {
+export function intersect(
+  range: Readonly<Range>,
+): Transform<Readonly<Range>, Range> {
   return pipe(
     asRange,
-    (range: Range) => (test: Range) =>
+    (range: Readonly<Range>) => (test: Readonly<Range>) =>
       alternative(
         /* One-dimensional range. */
         pipe(
           asRange1D,
-          (range: Range1D) =>
+          (range: Readonly<Range1D>) =>
             pipe(
               (testMin: number) => pipe(
                 (testMax: number) =>
@@ -197,11 +203,11 @@ export function intersect(range: Range): Transform<Range, Range> {
         /* Multi-dimensional range. */
         pipe(
           asMultiDimRange,
-          (range: MultiDimRange) => pipe(
+          (range: Readonly<MultiDimRange>) => pipe(
             asMultiDimRange,
             hasLength(range.length),
-            (test: MultiDimRange) => (
-              range.map((el: Range1D, i: number) => intersect(el)(test[i]))
+            (test: Readonly<MultiDimRange>) => (
+              range.map((el: Readonly<Range1D>, i: number) => intersect(el)(test[i]))
             ),
           )(test),
         ),
@@ -273,19 +279,19 @@ export function isRange2D(value: any): boolean {
  * @param   range The range.
  * @returns       Last value of each dimension of the range.
  */
-export function last(range: Range): undefined | number | number[] {
+export function last(range: Readonly<Range>): undefined | number | number[] {
   return pipe(
     asRange,
     alternative(
       /* One-dimensional range. */
       pipe(
         asRange1D,
-        (range: Range1D) => range[1],
+        (range: Readonly<Range1D>) => range[1],
       ),
       /* Multi-dimensional range. */
       pipe(
         asMultiDimRange,
-        map((el: Range1D) => asNumber(last(el))),
+        map((el: Readonly<Range1D>) => asNumber(last(el))),
       ),
       /* Empty range. */
       pipe(
@@ -301,19 +307,19 @@ export function last(range: Range): undefined | number | number[] {
  * @param   range The range.
  * @returns       Length of each dimension of the range.
  */
-export function length(range: Range): number | number[] {
+export function length(range: Readonly<Range>): number | number[] {
   return pipe(
     asRange,
     alternative(
       /* One-dimensional range. */
       pipe(
         asRange1D,
-        (range: Range1D) => abs(asNumber(first(range)) - asNumber(last(range))),
+        (range: Readonly<Range1D>) => abs(asNumber(first(range)) - asNumber(last(range))),
       ),
       /* Multi-dimensional range. */
       pipe(
         asMultiDimRange,
-        map((el: Range1D) => asNumber(length(el))),
+        map((el: Readonly<Range1D>) => asNumber(length(el))),
       ),
       /* Empty range. */
       pipe(
@@ -329,7 +335,7 @@ export function length(range: Range): number | number[] {
  * @param   range The range.
  * @returns       Maximum value of each dimension of the range.
  */
-export function max(range: Range): undefined | number | number[] {
+export function max(range: Readonly<Range>): undefined | number | number[] {
   return pipe(
     asRange,
     alternative(
@@ -341,7 +347,7 @@ export function max(range: Range): undefined | number | number[] {
       /* Multi-dimensional range. */
       pipe(
         asMultiDimRange,
-        map((el: Range1D) => asNumber(max(el))),
+        map((el: Readonly<Range1D>) => asNumber(max(el))),
       ),
       /* Empty range. */
       pipe(
@@ -357,7 +363,7 @@ export function max(range: Range): undefined | number | number[] {
  * @param   range The range.
  * @returns       Mean of each dimension of the range.
  */
-export function mean(range: Range): undefined | number | number[] {
+export function mean(range: Readonly<Range>): undefined | number | number[] {
   return pipe(
     asRange,
     alternative(
@@ -369,7 +375,7 @@ export function mean(range: Range): undefined | number | number[] {
       /* Multi-dimensional range. */
       pipe(
         asMultiDimRange,
-        map((el: Range1D) => asNumber(mean(el))),
+        map((el: Readonly<Range1D>) => asNumber(mean(el))),
       ),
       /* Empty range. */
       pipe(
@@ -385,7 +391,7 @@ export function mean(range: Range): undefined | number | number[] {
  * @param   range The range.
  * @returns       Minimum value of each dimension of the range.
  */
-export function min(range: Range): undefined | number | number[] {
+export function min(range: Readonly<Range>): undefined | number | number[] {
   return pipe(
     asRange,
     alternative(
@@ -397,7 +403,7 @@ export function min(range: Range): undefined | number | number[] {
       /* Multi-dimensional range. */
       pipe(
         asMultiDimRange,
-        map((el: Range1D) => asNumber(min(el))),
+        map((el: Readonly<Range1D>) => asNumber(min(el))),
       ),
       /* Empty range. */
       pipe(
@@ -413,11 +419,13 @@ export function min(range: Range): undefined | number | number[] {
  * @param   range Reference range
  * @returns       Method to check if reference range is part of another.
  */
-export function partOf(range: Range): Transform<Range, boolean> {
+export function partOf(
+  range: Readonly<Range>,
+): Transform<Readonly<Range>, boolean> {
   return pipe(
     asRange,
-    (range: Range) => (test: Range) => alternative(
-      (test: Range) => includes(test)(range),
+    (range: Readonly<Range>) => (test: Readonly<Range>) => alternative(
+      (test: Readonly<Range>) => includes(test)(range),
       ret(false),
     )(test),
   )(range);
@@ -428,19 +436,19 @@ export function partOf(range: Range): Transform<Range, boolean> {
  * @param   range The range.
  * @returns       Range with values in each dimension swapped.
  */
-export function reverse(range: Range): Range {
+export function reverse(range: Readonly<Range>): Range {
   return pipe(
     asRange,
     alternative(
       /* One-dimensional range. */
       pipe(
         asRange1D,
-        (range: Range1D) => [asNumber(last(range)), asNumber(first(range))],
+        (range: Readonly<Range1D>) => [asNumber(last(range)), asNumber(first(range))],
       ),
       /* Multi-dimensional range. */
       pipe(
         asMultiDimRange,
-        map((el: Range1D) => asRange1D(reverse(el))),
+        map((el: Readonly<Range1D>) => asRange1D(reverse(el))),
       ),
       /* Empty range. */
       pipe(
@@ -459,8 +467,8 @@ export function reverse(range: Range): Range {
  * @returns       Range moved by delta.
  */
 export function shift(
-  range: Range,
-  delta: number | number[],
+  range: Readonly<Range>,
+  delta: number | ReadonlyArray<number>,
 ): Range {
   return pipe(
     asRange,
@@ -468,7 +476,7 @@ export function shift(
       /* One-dimensional range. */
       pipe(
         asRange1D,
-        (range: Range1D) => pipe(
+        (range: Readonly<Range1D>) => pipe(
           asNumber,
           (delta: number) => [
             asNumber(first(range)) + delta,
@@ -479,19 +487,19 @@ export function shift(
       /* Multi-dimensional range. */
       pipe(
         asMultiDimRange,
-        (range: MultiDimRange) => alternative(
+        (range: Readonly<MultiDimRange>) => alternative(
           /* Delta is number. */
           pipe(
             asNumber,
             (delta: number) => (
-              map((el: Range1D) => asRange1D(shift(el, delta)))(range)
+              map((el: Readonly<Range1D>) => asRange1D(shift(el, delta)))(range)
             ),
           ),
           /* Delta is array. */
           pipe(
             hasLength(range.length),
             (delta: any[]) => (
-              range.map((el: Range1D, i: number) =>
+              range.map((el: Readonly<Range1D>, i: number) =>
                 asRange1D(shift(el, asNumber(delta[i])))
               )
             ),
@@ -513,19 +521,19 @@ export function shift(
  * @returns       Range with values in each dimension sorted from lowest to
  *                highest.
  */
-export function sort(range: Range): Range {
+export function sort(range: Readonly<Range>): Range {
   return pipe(
     asRange,
     alternative(
       /* One-dimensional range. */
       pipe(
         asRange1D,
-        (range: Range1D) => [min(range), max(range)],
+        (range: Readonly<Range1D>) => [min(range), max(range)],
       ),
       /* Multi-dimensional range. */
       pipe(
         asMultiDimRange,
-        map((el: Range1D) => asRange1D(sort(el))),
+        map((el: Readonly<Range1D>) => asRange1D(sort(el))),
       ),
       /* Empty range. */
       pipe(
@@ -541,10 +549,10 @@ export function sort(range: Range): Range {
  * @param   range Two-dimensional range.
  * @returns       Top-left coordinates.
  */
-export function topLeft(range: Range2D): Coordinates2D {
+export function topLeft(range: Readonly<Range2D>): Coordinates2D {
   return pipe(
     asRange2D,
-    (range: Range2D) => [min(range[0]), max(range[1])],
+    (range: Readonly<Range2D>) => [min(range[0]), max(range[1])],
   )(range);
 }
 
@@ -553,9 +561,9 @@ export function topLeft(range: Range2D): Coordinates2D {
  * @param   range Two-dimensional range.
  * @returns       Top-right coordinates.
  */
-export function topRight(range: Range2D): Coordinates2D {
+export function topRight(range: Readonly<Range2D>): Coordinates2D {
   return pipe(
     asRange2D,
-    (range: Range2D) => [max(range[0]), max(range[1])],
+    (range: Readonly<Range2D>) => [max(range[0]), max(range[1])],
   )(range);
 }
