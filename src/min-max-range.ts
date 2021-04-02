@@ -137,10 +137,10 @@ export function includes(
  */
 export function inside(
   range: Readonly<Range>,
-): Transform<number | number[], boolean> {
+): Transform<number | ReadonlyArray<number>, boolean> {
   return pipe(
     asRange,
-    (range: Readonly<Range>) => (test: number | number[]) =>
+    (range: Readonly<Range>) => (test: number | ReadonlyArray<number>) =>
       alternative(
         /* One-dimensional range. */
         pipe(
